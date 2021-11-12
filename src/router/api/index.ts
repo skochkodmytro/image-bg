@@ -2,7 +2,6 @@ import { Router } from 'express';
 
 import Image, { IImage } from "../../models/Image";
 import { ImageError } from "../../middlewares/handleError";
-import cluster from "cluster";
 
 const router = Router();
 
@@ -31,7 +30,7 @@ router.delete('/image/:id', async (req, res, next) => {
         const image = await Image.findById(id);
 
         if (!image) {
-            throw new Error();
+            throw new ImageError(404, 'Image not found');
         }
 
         await image.delete();
@@ -41,34 +40,8 @@ router.delete('/image/:id', async (req, res, next) => {
     }
 });
 
-router.get('/slow-request', async (req, res) => {
-    const startTime = new Date()
-    const result = await isPrime(parseInt(req.query.number as string))
-    const endTime = new Date()
-    res.json({
-        result,
-        time: endTime.getTime() - startTime.getTime() + "ms",
-    })
-});
-
-router.get('/test', async (req, res) => {
-    res.json({
-        msg: 'test request',
-    })
-});
-
 router.get('/throw-error',  async (req, res, next) => {
     throw Error('Bad Request');
 });
-
-const isPrime = (number: number) => {
-    return new Promise(resolve => {
-        let isPrime = true
-        for (let i = 3; i < number; i++) {
-
-        }
-        resolve(isPrime);
-    })
-}
 
 export default router;
