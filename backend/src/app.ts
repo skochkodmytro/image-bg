@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 
 import router from "./router";
 import { handleError } from "./middlewares/handleError";
@@ -14,6 +15,7 @@ export const runApp = () => {
     const app = express();
     const port = 8080;
 
+    app.use(cors())
     app.use(fileUpload());
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())

@@ -32,7 +32,7 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
     } catch (e) {
         next(e);
     }
-};
+}
 
 export const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -50,5 +50,15 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
         res.json({ msg: 'Image was delete' });
     } catch (e) {
         next(e)
+    }
+}
+
+export const getImages = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const images = await Image.find({});
+
+        res.json({ images });
+    } catch(e) {
+        next(e);
     }
 }
