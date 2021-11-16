@@ -16,7 +16,7 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
         const { files } = req;
 
         // TODO: Implement multiple images support
-        if (Object.keys(files as Object).length > 1) throw new ImageError(400, `Can't upload more than 1 image`);
+        if (Object.keys(files as any).length > 1) throw new ImageError(400, `Can't upload more than 1 image`);
 
         for (const property in files) {
             const file = files[property] as UploadedFile;

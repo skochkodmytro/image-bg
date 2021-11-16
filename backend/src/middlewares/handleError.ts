@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-// import { ErrorRequestHandler } from "express";
 
 abstract class CustomError extends Error {
     abstract statusCode: number;
@@ -7,8 +6,8 @@ abstract class CustomError extends Error {
 }
 
 export class ImageError extends CustomError {
-    statusCode: number = 500;
-    message: string = 'Something went wrong';
+    statusCode = 500;
+    message = 'Something went wrong';
 
     constructor(statusCode?: number, message?: string) {
         super();
