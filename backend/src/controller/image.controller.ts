@@ -25,6 +25,8 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
             const url = '/images/' + shortid.generate() + '.jpeg';
 
             await writeFileAsync(path.resolve('./') + '/public' + url, file.data);
+
+            // todo why some: 'qweqew' is allowed ??
             const createdImgDocument = await Image.create({ name: file.name, url });
 
             res.json({ img: createdImgDocument });
@@ -45,6 +47,8 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
         }
 
         const urlForDelete = path.resolve('./') + '/public' + image.url;
+
+        // todo think how we can cover transaction issues
         await deleteFileAsync(urlForDelete);
         await image.delete();
         res.json({ msg: 'Image was delete' });
@@ -55,6 +59,7 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
 
 export const getImages = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // todo best practise for lists implement limit, skip
         const images = await Image.find({});
 
         res.json({ images });
