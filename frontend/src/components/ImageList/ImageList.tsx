@@ -12,7 +12,7 @@ export const ImageListWrapper: FC<OwnTypes> = ({ images }) => {
         <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
             {images.map((item: any) => (
                 <ImageListItem key={item._id}>
-                    {/*todo `${IMAGE_PATH_PREFIX}${item.url}` maybe add separator / */}
+                    {/*todo `${IMAGE_PATH_PREFIX}${item.url}` maybe add separator /. Remove from / item.url */}
                     <img
                         src={`${IMAGE_PATH_PREFIX}${item.url}`}
                         alt={item.name}

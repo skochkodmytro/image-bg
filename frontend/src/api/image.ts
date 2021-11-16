@@ -7,7 +7,7 @@ type GetImagesType = {
 }
 
 export class ImageApi {
-    // todo change to get images
+    // todo rename to getImages
     static getImage() {
         return axios.get<GetImagesType>(`${API}/images`).then(data => data.data);
     }

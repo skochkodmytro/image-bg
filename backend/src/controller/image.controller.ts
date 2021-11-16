@@ -22,11 +22,12 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
             const file = files[property] as UploadedFile;
             if (file.mimetype !== 'image/jpeg') throw new ImageError(400, 'Image type must be image/jpeg');
 
+            // todo add Rembg localhost: 5000
             const url = '/images/' + shortid.generate() + '.jpeg';
 
             await writeFileAsync(path.resolve('./') + '/public' + url, file.data);
 
-            // todo why some: 'qweqew' is allowed ??
+            // todo why someOtherProp: 'some' is allowed ??
             const createdImgDocument = await Image.create({ name: file.name, url });
 
             res.json({ img: createdImgDocument });
@@ -48,10 +49,11 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
 
         const urlForDelete = path.resolve('./') + '/public' + image.url;
 
-        // todo think how we can cover transaction issues
-        await deleteFileAsync(urlForDelete);
+        // todo read transaction problems
         await image.delete();
-        res.json({ msg: 'Image was delete' });
+        await deleteFileAsync(urlForDelete);
+
+        res.json({ msg: 'Image was deleted' });
     } catch (e) {
         next(e)
     }
@@ -59,7 +61,7 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
 
 export const getImages = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // todo best practise for lists implement limit, skip
+        // todo best practise for lists implement limit = 1000, skip = 0
         const images = await Image.find({});
 
         res.json({ images });

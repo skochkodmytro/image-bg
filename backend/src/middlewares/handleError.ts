@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 
+
+// todo remove abstract
 abstract class CustomError extends Error {
     abstract statusCode: number;
     abstract message: string;
 }
 
 // todo move to own folder
+// ./errors
+// ./errors/CustomError
+// ./error/NetworkError
 export class ImageError extends CustomError {
     statusCode = 500;
     message = 'Something went wrong';
 
-    // todo I would always hardcode errors for each types like ImageFormatError, ImagesMaxLengthError
     constructor(statusCode?: number, message?: string) {
         super();
         if (statusCode) this.statusCode = statusCode;
