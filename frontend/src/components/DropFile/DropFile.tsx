@@ -1,16 +1,34 @@
-import React from 'react'
-import { Box, Typography, Container } from '@mui/material';
+import React, { FC } from 'react'
+import { Box, Typography } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { useDropzone } from 'react-dropzone'
 
-function DropFile() {
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+import { ImageApi } from "../../api/image";
 
-    const files = acceptedFiles.map((file, i) => {
-        return (
-            <li key={i}>
-                {(file as any).path} - {file.size} bytes
-            </li>
-        )
+type OwnProps = {
+    saveImage: (img: ImageType) => void
+}
+
+export const DropFile: FC<OwnProps> = ({ saveImage }) => {
+    const { enqueueSnackbar } = useSnackbar();
+    const { getRootProps, getInputProps } = useDropzone({
+        maxFiles: 1, // If drop more than 1 file throw error(run onDropRejected)
+        multiple: false,
+        accept: 'image/jpeg',
+        onDropRejected: (fileRejections) => {
+            enqueueSnackbar(fileRejections[0].errors[0].message, { variant: 'error' });
+        },
+        onDropAccepted: (files) => {
+            const file = files[0];
+            const fd = new FormData();
+            fd.append('image', file);
+
+            ImageApi.saveImage(fd)
+                .then(({ image }) => saveImage(image))
+                .catch((err: Error) => {
+                    enqueueSnackbar(err.message, { variant: 'error' });
+                });
+        }
     });
 
     return (
@@ -19,7 +37,7 @@ function DropFile() {
             component="div"
             sx={{ p: 2, border: '2px dashed grey' }}
         >
-            <input {...getInputProps()} />
+            <input {...getInputProps()}/>
 
             <Typography variant="subtitle1" align="center">
                 Drag 'n' drop some files here, or click to select files
@@ -27,5 +45,3 @@ function DropFile() {
         </Box>
     );
 }
-
-export { DropFile }

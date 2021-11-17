@@ -15,22 +15,22 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
     try {
         const { files } = req;
 
-        if (Object.keys(files as any).length > 1) throw new CustomError(400, `Can't upload more than 1 image`);
+        if (!files) throw new CustomError(400, `Not found files`);
+        if (Object.keys(files).length > 1) throw new CustomError(400, `Can't upload more than 1 image`);
+        if (!files.image) throw new CustomError(400, `Must be Object with 'image' property`);
 
-        for (const property in files) {
-            const file = files[property] as UploadedFile;
-            if (file.mimetype !== 'image/jpeg') throw new CustomError(400, 'Image type must be image/jpeg');
+        const file = files.image as UploadedFile;
+        if (file.mimetype !== 'image/jpeg') throw new CustomError(400, 'Image type must be image/jpeg');
 
-            // todo add Rembg localhost: 5000
-            const url = 'images/' + shortid.generate() + '.jpeg';
+        // todo add Rembg localhost: 5000
+        const url = 'images/' + shortid.generate() + '.jpeg';
 
-            await writeFileAsync(path.resolve('./') + '/public/' + url, file.data);
+        await writeFileAsync(path.resolve('./') + '/public/' + url, file.data);
 
-            // todo why someOtherProp: 'some' is allowed ??
-            const createdImgDocument: IImage = await Image.create({ name: file.name, url, some: 'asd' });
+        // todo why someOtherProp: 'some' is allowed ??
+        const createdImgDocument: IImage = await Image.create({ name: file.name, url });
 
-            res.json({ img: createdImgDocument });
-        }
+        res.json({ image: createdImgDocument });
     } catch (e) {
         next(e);
     }

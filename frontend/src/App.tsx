@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography } from "@mui/material";
 
 import { DropFile } from "./components/DropFile/DropFile";
+import { ImageListWrapper } from "./components/ImageList/ImageList";
 
 import './App.css';
 import { ImageApi } from "./api/image";
-import { ImageListWrapper } from "./components/ImageList/ImageList";
 
 function App() {
     const [images, setImages] = useState<Array<ImageType>>([]);
-    const [isImagesFetched, setIsImagesFetched] = useState<boolean>(false);
 
     useEffect(() => {
         ImageApi.getImages().then(data => setImages(data.images));
     }, [])
+
+    const handleSaveImage = (img: ImageType) => {
+        const updatedImagesList = [...images, img];
+        setImages(updatedImagesList);
+    }
 
     return (
         <Container>
@@ -21,7 +25,7 @@ function App() {
                 Img BG Delete
             </Typography>
 
-            <DropFile />
+            <DropFile saveImage={handleSaveImage} />
 
             <ImageListWrapper images={images} />
         </Container>
