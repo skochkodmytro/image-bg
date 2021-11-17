@@ -5,7 +5,7 @@ export interface IImage extends Document {
     url: string
 }
 
-const Image = new Schema<IImage>({
+const ImageSchema = new Schema<IImage>({
     name: {
         type: String,
         required: true,
@@ -17,4 +17,4 @@ const Image = new Schema<IImage>({
     }
 });
 
-export default model<IImage>('Image', Image);
+export default model<IImage>('Image', ImageSchema);

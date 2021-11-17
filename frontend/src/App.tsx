@@ -12,7 +12,7 @@ function App() {
     const [isImagesFetched, setIsImagesFetched] = useState<boolean>(false);
 
     useEffect(() => {
-        ImageApi.getImage().then(data => setImages(data.images));
+        ImageApi.getImages().then(data => setImages(data.images));
     }, [])
 
     return (

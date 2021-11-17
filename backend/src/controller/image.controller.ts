@@ -5,8 +5,8 @@ import * as fs from "fs";
 import shortid from 'shortid';
 import { promisify } from "util";
 
-import Image from "../models/Image";
-import { ImageError } from "../middlewares/handleError";
+import Image, { IImage } from "../models/Image";
+import { CustomError } from "../errors";
 
 const writeFileAsync = promisify(fs.writeFile);
 const deleteFileAsync = promisify(fs.unlink);
@@ -15,20 +15,19 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
     try {
         const { files } = req;
 
-        // TODO: Implement multiple images support
-        if (Object.keys(files as any).length > 1) throw new ImageError(400, `Can't upload more than 1 image`);
+        if (Object.keys(files as any).length > 1) throw new CustomError(400, `Can't upload more than 1 image`);
 
         for (const property in files) {
             const file = files[property] as UploadedFile;
-            if (file.mimetype !== 'image/jpeg') throw new ImageError(400, 'Image type must be image/jpeg');
+            if (file.mimetype !== 'image/jpeg') throw new CustomError(400, 'Image type must be image/jpeg');
 
             // todo add Rembg localhost: 5000
-            const url = '/images/' + shortid.generate() + '.jpeg';
+            const url = 'images/' + shortid.generate() + '.jpeg';
 
-            await writeFileAsync(path.resolve('./') + '/public' + url, file.data);
+            await writeFileAsync(path.resolve('./') + '/public/' + url, file.data);
 
             // todo why someOtherProp: 'some' is allowed ??
-            const createdImgDocument = await Image.create({ name: file.name, url });
+            const createdImgDocument: IImage = await Image.create({ name: file.name, url, some: 'asd' });
 
             res.json({ img: createdImgDocument });
         }
@@ -44,10 +43,10 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
         const image = await Image.findById(id);
 
         if (!image) {
-            throw new ImageError(404, 'Image not found');
+            throw new CustomError(404, 'Image not found');
         }
 
-        const urlForDelete = path.resolve('./') + '/public' + image.url;
+        const urlForDelete = path.resolve('./') + '/public/' + image.url;
 
         // todo read transaction problems
         await image.delete();
@@ -59,10 +58,11 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
-export const getImages = async (req: Request, res: Response, next: NextFunction) => {
+type GetImagesRequestType = Request<unknown, unknown, null, { limit: string | undefined, skip: string | undefined }>
+export const getImages = async (req: GetImagesRequestType, res: Response, next: NextFunction) => {
     try {
-        // todo best practise for lists implement limit = 1000, skip = 0
-        const images = await Image.find({});
+        let { limit = 1000, skip = 0 } = req.query;
+        const images = await Image.find({}).skip(+skip).limit(+limit);
 
         res.json({ images });
     } catch(e) {
