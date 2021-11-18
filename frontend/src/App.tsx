@@ -15,7 +15,7 @@ function App() {
     }, [])
 
     const handleSaveImage = (img: ImageType) => {
-        const updatedImagesList = [...images, img];
+        const updatedImagesList = [img, ...images];
         setImages(updatedImagesList);
     }
 
