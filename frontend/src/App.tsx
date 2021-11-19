@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Typography } from "@mui/material";
 
 import { DropFile } from "./components/DropFile/DropFile";
 import { ImageListWrapper } from "./components/ImageList/ImageList";
 
+import { fetchImages } from "./store/image/image.actions";
+
+import { AppState } from "./store/rootStore";
 import './App.css';
-import { ImageApi } from "./api/image";
 
 function App() {
-    const [images, setImages] = useState<Array<ImageType>>([]);
+    const dispatch = useDispatch();
+    const images = useSelector<AppState, Array<ImageType>>(store => store.image.images);
 
     useEffect(() => {
-        ImageApi.getImages().then(data => setImages(data.images));
+        dispatch(fetchImages())
     }, [])
-
-    const handleSaveImage = (img: ImageType) => {
-        const updatedImagesList = [img, ...images];
-        setImages(updatedImagesList);
-    }
 
     return (
         <Container>
@@ -25,7 +24,7 @@ function App() {
                 Img BG Delete
             </Typography>
 
-            <DropFile saveImage={handleSaveImage} />
+            <DropFile />
 
             <Box sx={{ my: 5 }}>
                 <ImageListWrapper images={images} />

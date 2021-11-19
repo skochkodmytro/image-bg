@@ -1,18 +1,20 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { Box, LinearProgress, Typography } from '@mui/material';
+import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from 'notistack';
 import { useDropzone } from 'react-dropzone'
 
-import { ImageApi } from "../../api/image";
+import { saveImage } from "../../store/image/image.actions";
+
+import { RequestStatusEnum } from "../../enums";
 import './DropFile.css';
+import { AppState } from "../../store/rootStore";
 
-type OwnProps = {
-    saveImage: (img: ImageType) => void
-}
-
-export const DropFile: FC<OwnProps> = ({ saveImage }) => {
-    const [isSendingImage, setIsSendingImage] = useState<boolean>(false);
+export const DropFile: FC = () => {
+    const dispatch = useDispatch();
+    const saveImageStatus = useSelector<AppState, RequestStatusEnum | null>(store => store.image.saveImageStatus);
     const { enqueueSnackbar } = useSnackbar();
+
     const { getRootProps, getInputProps } = useDropzone({
         maxFiles: 1, // If drop more than 1 file throw error(run onDropRejected)
         multiple: false,
@@ -20,24 +22,19 @@ export const DropFile: FC<OwnProps> = ({ saveImage }) => {
         onDropRejected: (fileRejections) => {
             enqueueSnackbar(fileRejections[0].errors[0].message, { variant: 'error' });
         },
-        onDropAccepted: (files) => {
-            setIsSendingImage(true);
-
+        onDropAccepted: async (files) => {
             const file = files[0];
             const fd = new FormData();
             fd.append('image', file);
 
-            ImageApi.saveImage(fd)
-                .then(({ image }) => {
-                    saveImage(image);
-                    setIsSendingImage(false);
-                })
-                .catch((err: Error) => {
-                    enqueueSnackbar(err.message, { variant: 'error' });
-                    setIsSendingImage(false);
-                });
+            const errMessage = await dispatch(saveImage(fd));
+            if (errMessage) {
+                enqueueSnackbar(errMessage, { variant: 'error' });
+            }
         }
     });
+
+    const isSavingImage = saveImageStatus === RequestStatusEnum.PENDING;
 
     return (
         <Box
@@ -45,14 +42,14 @@ export const DropFile: FC<OwnProps> = ({ saveImage }) => {
             component="div"
             sx={{ p: 2, border: '2px dashed grey', position: 'relative' }}
         >
-            <input {...getInputProps({ disabled: isSendingImage })}/>
+            <input {...getInputProps({ disabled: isSavingImage })}/>
 
             <Typography variant="subtitle1" align="center" sx={{ cursor: 'pointer' }}>
-                {isSendingImage ? 'Loading...' : 'Drop file here'}
+                {isSavingImage ? 'Loading...' : 'Drop file here'}
             </Typography>
 
             {
-                isSendingImage &&
+                isSavingImage &&
                 <Box className="progress-wrapper">
                     <LinearProgress />
                 </Box>

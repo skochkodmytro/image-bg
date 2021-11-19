@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
 import { CssBaseline } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
+
+import { store } from "./store/rootStore";
 
 import './index.css';
 import App from './App';
@@ -9,10 +12,12 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-      <SnackbarProvider maxSnack={3}>
-          <CssBaseline />
-          <App />
-      </SnackbarProvider>
+      <Provider store={store}>
+          <SnackbarProvider maxSnack={3}>
+              <CssBaseline />
+              <App />
+          </SnackbarProvider>
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
