@@ -7,7 +7,7 @@ import * as fs from "fs";
 import shortid from 'shortid';
 import { promisify } from "util";
 
-import Image from "../models/Image";
+import Image, { IImage } from "../models/Image";
 import { CustomError } from "../errors";
 
 const writeFileAsync = promisify(fs.writeFile);
@@ -44,10 +44,11 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
         });
 
         removedBgFromJpegStream.on('end', async () => {
-            // todo why someOtherProp: 'some' is allowed ??
-
             await writeFileAsync(path.resolve('./') + '/public/' + url, Buffer.concat(pngBuffer));
-            const createdImgDocument = await Image.create({ name: file.originalname, url });
+
+            // todo: try to find another way to check correctly properties in document
+            const newImage: IImage = { name: file.originalname, url };
+            const createdImgDocument = await Image.create(newImage);
 
             res.json({ image: createdImgDocument });
         });

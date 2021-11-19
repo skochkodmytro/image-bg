@@ -1,11 +1,13 @@
 import { Schema, model, Document } from "mongoose";
 
-export interface IImage extends Document {
+export interface IImage {
     name: string,
     url: string
 }
 
-const ImageSchema = new Schema<IImage>({
+interface UserDocument extends IImage, Document {}
+
+const ImageSchema = new Schema<UserDocument>({
     name: {
         type: String,
         required: true,
