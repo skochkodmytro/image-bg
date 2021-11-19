@@ -24,6 +24,6 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 } else {
-    const options = process.env.NODE_ENV === 'development' ? config.development : config.production;
+    const options = process.env.NODE_ENV === 'production' ? config.production : config.development;
     runApp(options);
 }

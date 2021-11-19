@@ -7,8 +7,8 @@ import * as fs from "fs";
 import shortid from 'shortid';
 import { promisify } from "util";
 
-import Image, { IImage } from "../models/Image";
-import { CustomError } from "../errors";
+import Image, { IImage } from "./db/Image";
+import { CustomError } from "../../errors/CustomError";
 
 const writeFileAsync = promisify(fs.writeFile);
 const deleteFileAsync = promisify(fs.unlink);
