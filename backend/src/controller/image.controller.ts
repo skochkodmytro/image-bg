@@ -82,8 +82,8 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
 type GetImagesRequestType = Request<unknown, unknown, null, { limit: string | undefined, skip: string | undefined }>
 export const getImages = async (req: GetImagesRequestType, res: Response, next: NextFunction) => {
     try {
-        let limit: number = req.query.limit ? parseInt(req.query.limit) : 1000;
-        let skip: number = req.query.skip ? parseInt(req.query.skip) : 0;
+        const limit: number = req.query.limit ? parseInt(req.query.limit) : 1000;
+        const skip: number = req.query.skip ? parseInt(req.query.skip) : 0;
 
         if (isNaN(limit) || isNaN(skip)) throw new CustomError(400, `limit or skip must be number type`)
 
