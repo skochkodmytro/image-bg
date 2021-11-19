@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 
 import { DropFile } from "./components/DropFile/DropFile";
 import { ImageListWrapper } from "./components/ImageList/ImageList";
@@ -27,7 +27,9 @@ function App() {
 
             <DropFile saveImage={handleSaveImage} />
 
-            <ImageListWrapper images={images} />
+            <Box sx={{ my: 5 }}>
+                <ImageListWrapper images={images} />
+            </Box>
         </Container>
     );
 }

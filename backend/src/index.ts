@@ -1,5 +1,10 @@
+import dotenv from 'dotenv';
 import cluster from "cluster";
 import { cpus } from 'os';
+
+import config from "./config/config";
+
+dotenv.config();
 
 const totalCPUs = cpus().length;
 
@@ -19,5 +24,6 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 } else {
-    runApp();
+    const options = process.env.NODE_ENV === 'development' ? config.development : config.production;
+    runApp(options);
 }

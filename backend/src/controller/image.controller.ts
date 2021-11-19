@@ -32,7 +32,7 @@ export const saveImage = async (req: Request, res: Response, next: NextFunction)
                 throw e;
             });
 
-        let pngBuffer: Array<Buffer> = [];
+        const pngBuffer: Array<Buffer> = [];
         const url = 'images/' + shortid.generate() + '.png';
 
         removedBgFromJpegStream.on('data', (data: Buffer) => {
@@ -81,8 +81,12 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
 type GetImagesRequestType = Request<unknown, unknown, null, { limit: string | undefined, skip: string | undefined }>
 export const getImages = async (req: GetImagesRequestType, res: Response, next: NextFunction) => {
     try {
-        let { limit = 1000, skip = 0 } = req.query;
-        const images = await Image.find({}).skip(+skip).limit(+limit);
+        let limit: number = req.query.limit ? parseInt(req.query.limit) : 1000;
+        let skip: number = req.query.skip ? parseInt(req.query.skip) : 0;
+
+        if (isNaN(limit) || isNaN(skip)) throw new CustomError(400, `limit or skip must be number type`)
+
+        const images = await Image.find({}).skip(skip).limit(limit);
 
         res.json({ images });
     } catch(e) {
