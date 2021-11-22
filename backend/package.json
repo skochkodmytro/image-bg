@@ -8,6 +8,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node ./dist",
+    "start-prod": "NODE_ENV=production node ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

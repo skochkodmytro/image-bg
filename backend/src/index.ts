@@ -25,5 +25,7 @@ if (cluster.isMaster) {
     });
 } else {
     const options = process.env.NODE_ENV === 'production' ? config.production : config.development;
+    console.log(process.env.NODE_ENV);
+
     runApp(options);
 }
