@@ -8,15 +8,15 @@ import { handleError } from "./middlewares/handleError";
 
 export const runApp = (options: any) => {
 
-    const DB_USER_INFO = process.env.NODE_ENV === 'production' ? `${options.DB_USER}:${options.DB_PASSWORD}@` : '';
-
-    mongoose.connect(`mongodb://${DB_USER_INFO}${options.DB_HOST}:${options.DB_PORT}/${options.DB_NAME}`)
-        .then(() => {
-            console.log('Connected to MongoDB')
-        })
-        .catch(e => {
-            console.log(e);
-        });
+    // const DB_USER_INFO = process.env.NODE_ENV === 'production' ? `${options.DB_USER}:${options.DB_PASSWORD}@` : '';
+    //
+    // mongoose.connect(`mongodb://${DB_USER_INFO}${options.DB_HOST}:${options.DB_PORT}/${options.DB_NAME}`)
+    //     .then(() => {
+    //         console.log('Connected to MongoDB')
+    //     })
+    //     .catch(e => {
+    //         console.log(e);
+    //     });
 
     const app = express();
     const port = options.HOST_PORT || 8080;
