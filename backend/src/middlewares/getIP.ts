@@ -5,6 +5,7 @@ import os from 'os';
 export const getIP = (req: Request, res: Response, next: NextFunction) => {
     dns.lookup(os.hostname(), (err, address, family) => {
         if (err) {
+            console.log('error get IP');
             return next();
         }
         console.log('addr: ' + address);
