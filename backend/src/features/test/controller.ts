@@ -6,7 +6,7 @@ export const throwError = async (req: Request, res: Response) => {
 
 export const ping = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.status(200).json({ message: 'success' });
+        res.status(200).json({ message: 'success', address: req.address });
     } catch (e) {
         next(e);
     }
@@ -24,7 +24,7 @@ export const longRequest = async (req: Request, res: Response, next: NextFunctio
             const endTime = Date.now();
         }
 
-        res.json({ requestTime: Date.now() - startTime });
+        res.json({ requestTime: Date.now() - startTime, address: req.address });
     } catch(e) {
         next(e);
     }
