@@ -1,31 +1,36 @@
 import dotenv from 'dotenv';
-import cluster from "cluster";
-import { cpus } from 'os';
+import express from "express";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import cors from 'cors';
 
-import config from "./config/config";
+import router from "./router";
+
+import { handleError } from "./middlewares/handleError";
 
 dotenv.config();
 
-const totalCPUs = cpus().length;
+// const DB_USER_INFO = process.env.NODE_ENV === 'production' ? `${options.DB_USER}:${options.DB_PASSWORD}@` : '';
+//
+// mongoose.connect(`mongodb://${DB_USER_INFO}${options.DB_HOST}:${options.DB_PORT}/${options.DB_NAME}`)
+//     .then(() => {
+//         console.log('Connected to MongoDB')
+//     })
+//     .catch(e => {
+//         console.log(e);
+//     });
 
-import { runApp } from "./app";
+const app = express();
+const port = 8080;
 
-if (cluster.isMaster) {
-    console.log(`Number of CPUs is ${totalCPUs}`);
-    console.log(`Master ${process.pid} is running`);
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(express.static('public/'));
 
-    for (let i = 0; i < 2; i++) {
-        cluster.fork();
-    }
+app.use(router);
+app.use(handleError)
 
-    cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died`);
-        console.log("Let's fork another worker!");
-        cluster.fork();
-    });
-} else {
-    const options = process.env.NODE_ENV === 'production' ? config.production : config.development;
-    console.log(process.env.NODE_ENV);
-
-    runApp(options);
-}
+app.listen( port, () => {
+    console.log( `Server run on ${port}` );
+});

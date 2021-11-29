@@ -11,3 +11,21 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
         next(e);
     }
 }
+
+export const checkApp = async (req: Request, res: Response) => {
+    res.status(200).send({ status: 'OK' });
+}
+
+export const longRequest = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const startTime = Date.now();
+
+        while (Date.now() < startTime + 7000) {
+            const endTime = Date.now();
+        }
+
+        res.json({ requestTime: Date.now() - startTime });
+    } catch(e) {
+        next(e);
+    }
+}
