@@ -18,4 +18,8 @@ export class ImageApi {
     static saveImage(fd: FormData) {
         return axios.post<SaveImageType>(`${API}/images`, fd).then(data => data.data);
     }
+
+    static pingServer() {
+        return axios.get(`${API}/test/ping`).then(data => data.data);
+    }
 }

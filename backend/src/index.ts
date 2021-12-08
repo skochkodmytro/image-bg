@@ -23,7 +23,9 @@ dotenv.config();
 const app = express();
 const port = 8080;
 
-app.use(cors())
+app.use(cors({
+    origin: "http://imagebg-static.s3-website.us-east-2.amazonaws.com/"
+}))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static('public/'));

@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { CssBaseline } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
+import dotenv from 'dotenv';
 
 import { store } from "./store/rootStore";
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+dotenv.config();
 
 ReactDOM.render(
   <React.StrictMode>

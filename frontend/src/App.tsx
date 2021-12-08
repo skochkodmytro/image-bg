@@ -5,6 +5,8 @@ import { Box, Container, Typography } from "@mui/material";
 import { DropFile } from "./components/DropFile/DropFile";
 import { ImageListWrapper } from "./components/ImageList/ImageList";
 
+import { ImageApi } from "./api/image";
+
 import { fetchImages } from "./store/image/image.actions";
 
 import { AppState } from "./store/rootStore";
@@ -15,7 +17,10 @@ function App() {
     const images = useSelector<AppState, Array<ImageType>>(store => store.image.images);
 
     useEffect(() => {
-        dispatch(fetchImages())
+        dispatch(fetchImages());
+        ImageApi.pingServer().then(data => {
+            console.log(data);
+        })
     }, [])
 
     return (
